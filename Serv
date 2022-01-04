@@ -45,15 +45,21 @@ function ensite()
 {
         if [[ ! -f "/etc/nginx/sites-enabled/$1" ]]
         then
-                # sudo link
-                sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
+                if [[ -f "/etc/nginx/sites-available/$1" ]]
+                then
+                        # sudo link
+                        sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
 
-                # Reload NGINX
-                sudo systemctl restart nginx
+                        # Reload NGINX
+                        sudo systemctl restart nginx
 
-                # Display confirmation
-                echo "$1 has been enabled! See for yourself:"
-                ls /etc/nginx/sites-enabled
+                        # Display confirmation
+                        echo "$1 has been enabled! See for yourself:"
+                        ls /etc/nginx/sites-enabled
+                else
+                        # File doesn't exist to enable
+                        echo "$1 cannot be enabled (doesn't exist)!"
+                fi
         else
                 # already enabled
                 echo "$1 is already enabled!"
@@ -64,15 +70,20 @@ function dissite()
 {
         if [[ -f "/etc/nginx/sites-enabled/$1" ]]
         then
-                # unlink
-                sudo rm /etc/nginx/sites-enabled/$1
+                if [[ -f "/etc/nginx/sites-available/$1" ]]
+                then
+                        # unlink
+                        sudo rm /etc/nginx/sites-enabled/$1
 
-                # Reload NGINX
-                sudo systemctl restart nginx
+                        # Reload NGINX
+                        sudo systemctl restart nginx
 
-                # Display confirmation
-                echo "$1 has been disabled! See for yourself:"
-                ls /etc/nginx/sites-enabled
+                        # Display confirmation
+                        echo "$1 has been disabled! See for yourself:"
+                        ls /etc/nginx/sites-enabled
+                else
+                        echo "$1 cannot be disabled (doesn't exist), then how did you get here?"
+                fi
         else
                 # not enabled
                 echo "$1 has not been enabled. No need to disable it!"
