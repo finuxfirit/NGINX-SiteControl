@@ -43,14 +43,17 @@
 
 function ensite()
 {
-        if [[ ! -f $1 ]]
+        if [[ ! -f "/etc/nginx/sites-enabled/$1" ]]
         then
                 # sudo link
                 sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
 
-                 # Display confirmation
-                 echo "$1 has been enabled! See for yourself:"
-                 ls /etc/nginx/sites-enabled
+                # Reload NGINX
+                sudo systemctl restart nginx
+
+                # Display confirmation
+                echo "$1 has been enabled! See for yourself:"
+                ls /etc/nginx/sites-enabled
         else
                 # already enabled
                 echo "$1 is already enabled!"
@@ -59,10 +62,13 @@ function ensite()
 
 function dissite()
 {
-        if [[ -f $1 ]]
+        if [[ -f "/etc/nginx/sites-enabled/$1" ]]
         then
                 # unlink
                 sudo rm /etc/nginx/sites-enabled/$1
+
+                # Reload NGINX
+                sudo systemctl restart nginx
 
                 # Display confirmation
                 echo "$1 has been disabled! See for yourself:"
