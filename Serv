@@ -1,0 +1,74 @@
+##############################################################################################################################
+#															     #
+# oooooooooooo  o8o                                      oooooooooooo  o8o            o8o      .			     #
+# `888'     `8  `"'                                      `888'     `8  `"'            `"'    .o8			     #
+#  888         oooo  ooo. .oo.   oooo  oooo  oooo    ooo  888         oooo  oooo d8b oooo  .o888oo			     #
+#  888oooo8    `888  `888P"Y88b  `888  `888   `88b..8P'   888oooo8    `888  `888""8P `888    888			     #
+#  888    "     888   888   888   888   888     Y888'     888    "     888   888      888    888			     #
+#  888          888   888   888   888   888   .o8"'88b    888          888   888      888    888 .			     #
+# o888o        o888o o888o o888o  `V88V"V8P' o88'   888o o888o        o888o d888b    o888o   "888"			     #
+#														             #
+##############################################################################################################################
+															
+##############################################################################################################################
+# Code Name		: NGINX Site Control
+# Description		: BASH FUNCTIONS TO USE FOR ENABLING AND DISABLING SITES ON NGINX
+# Creator		: Nash Hymet (finuxfirit)
+# Conception Date	: January 4, 2022
+# Usage			: Step 1: Copy below these functions into a ~/.bash_functions file (create one if need to)
+# 			  Step 2: Add this to the bottom of your ~/.bashrc file
+#
+# 			  	if [ -f ~/.bash_functions ]; then
+# 				      . ~/.bash_functions
+#				fi
+#		          Step 3: Run this command in your terminal: . ~/.bashrc
+#		           	  (NOTE: Not sure if need to run anytime you update the ~/.bash_functions file but just do it)
+#			
+#			  Step 4: Use the command like so:
+#			  	  
+#			  	  ensite <my-site-here>
+#
+#			  	  or 
+#
+#			  	  dissite <my-site-here>
+#
+#			  	  NOTE: There must be a <my-site-here> file in your /etc/NGINX/sites-available because that is
+#			  	  	how symbolic links work. Go figure. :)
+#
+#			  Step 5: Profit?
+# 
+# Updates		: 2022/1/4 - Date of conception
+#
+##############################################################################################################################
+
+function ensite()
+{
+        if [[ ! -f $1 ]]
+        then
+                # sudo link
+                sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
+
+                 # Display confirmation
+                 echo "$1 has been enabled! See for yourself:"
+                 ls /etc/nginx/sites-enabled
+        else
+                # already enabled
+                echo "$1 is already enabled!"
+        fi
+}
+
+function dissite()
+{
+        if [[ -f $1 ]]
+        then
+                # unlink
+                sudo rm /etc/nginx/sites-enabled/$1
+
+                # Display confirmation
+                echo "$1 has been disabled! See for yourself:"
+                ls /etc/nginx/sites-enabled
+        else
+                # not enabled
+                echo "$1 has not been enabled. No need to disable it!"
+        fi
+}
